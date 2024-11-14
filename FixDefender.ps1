@@ -1,4 +1,6 @@
 #Requires -RunAsAdministrator
+Import-Module Defender
+Import-Module Appx
 
 function Fix-WindowsDefender {
     Write-Host "Starting Windows Defender repair process..." -ForegroundColor Green
@@ -20,10 +22,8 @@ function Fix-WindowsDefender {
 
         Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableAntiSpyware" -ErrorAction SilentlyContinue
         Set-MpPreference -DisableRealtimeMonitoring $false -ErrorAction SilentlyContinue
-
-        Write-Host "Attempting to reset Windows Security..." -ForegroundColor Yellow
         try {
-            Get-AppxPackage Microsoft.SecHealthUI -AllUsers | Reset-AppxPackage
+            Get-AppxPackage Microsoft.SecHealthUI -AllUsers -ErrorAction Stop | Reset-AppxPackage
         }
         catch {
             Write-Host "Basic reset failed, attempting full reset..." -ForegroundColor Yellow
